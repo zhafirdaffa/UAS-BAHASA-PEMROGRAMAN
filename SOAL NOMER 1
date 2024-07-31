@@ -1,0 +1,120 @@
+import tkinter as tk
+from tkinter import ttk
+from tkinter import messagebox
+
+# Data harga sewa kamar
+kamar_harga = {
+    "M": {"nama": "Melati", "harga": 650000},
+    "S": {"nama": "Sakura", "harga": 550000},
+    "L": {"nama": "Lily", "harga": 400000},
+    "A": {"nama": "Anggrek", "harga": 350000}
+}
+
+# Fungsi untuk menghitung total biaya
+def hitung_biaya():
+    try:
+        # Mendapatkan input dari user
+        nama_petugas = nama_petugas_entry.get()
+        nama_customer = nama_customer_entry.get()
+        tanggal_check_in = tanggal_check_in_entry.get()
+        kode_kamar = kode_kamar_combobox.get()
+        lama_sewa = int(lama_sewa_entry.get())
+        uang_bayar = int(uang_bayar_entry.get())
+
+        # Menghitung harga sewa
+        nama_kamar = kamar_harga[kode_kamar]["nama"]
+        harga_sewa = kamar_harga[kode_kamar]["harga"]
+        jumlah_bayar = harga_sewa * lama_sewa
+
+        # Menghitung diskon
+        if lama_sewa > 5:
+            diskon = 0.1
+        elif lama_sewa > 3:
+            diskon = 0.05
+        else:
+            diskon = 0
+
+        # Menghitung ppn
+        ppn = jumlah_bayar * diskon
+
+        # Menghitung total biaya dan uang kembali
+        total_bayar = jumlah_bayar - ppn
+        uang_kembali = uang_bayar - total_bayar
+
+        # Menampilkan hasil perhitungan
+        output_text = f"""
+        Bukti Pemesanan Kamar
+        Hotel "SEJUK ASRI"
+        
+        Nama Petugas: {nama_petugas}
+        Nama Customer: {nama_customer}
+        Tanggal Check-in: {tanggal_check_in}
+        
+        Nama Kamar Yang dipesan: {nama_kamar}
+        Harga sewa permalam: Rp. {harga_sewa:,}
+        Lama sewa: {lama_sewa} malam
+        PPN {int(diskon * 100)}%: Rp. {ppn:,}
+        Jumlah Bayar: Rp. {jumlah_bayar:,}
+        Total Bayar: Rp. {total_bayar:,}
+        Uang Bayar: Rp. {uang_bayar:,}
+        Uang Kembali: Rp. {uang_kembali:,}
+        """
+        
+        result_label.config(text=output_text)
+    except ValueError:
+        messagebox.showerror("Error", "Masukkan angka yang valid untuk lama sewa dan uang bayar")
+
+# Membuat window GUI
+window = tk.Tk()
+window.title("Transaksi Pembayaran Hotel")
+
+# Label untuk judul
+judul_label = tk.Label(window, text='Hotel "SEJUK ASRI"', font=("Arial", 16))
+judul_label.grid(row=0, column=0, columnspan=2, padx=10, pady=10)
+
+# Label dan entry untuk nama petugas
+nama_petugas_label = tk.Label(window, text="Nama Petugas:")
+nama_petugas_label.grid(row=1, column=0, padx=5, pady=5)
+nama_petugas_entry = tk.Entry(window)
+nama_petugas_entry.grid(row=1, column=1, padx=5, pady=5)
+
+# Label dan entry untuk nama customer
+nama_customer_label = tk.Label(window, text="Nama Customer:")
+nama_customer_label.grid(row=2, column=0, padx=5, pady=5)
+nama_customer_entry = tk.Entry(window)
+nama_customer_entry.grid(row=2, column=1, padx=5, pady=5)
+
+# Label dan entry untuk tanggal check in
+tanggal_check_in_label = tk.Label(window, text="Tanggal Check In:")
+tanggal_check_in_label.grid(row=3, column=0, padx=5, pady=5)
+tanggal_check_in_entry = tk.Entry(window)
+tanggal_check_in_entry.grid(row=3, column=1, padx=5, pady=5)
+
+# Label dan combobox untuk kode kamar
+kode_kamar_label = tk.Label(window, text="Kode Kamar (M/S/L/A):")
+kode_kamar_label.grid(row=4, column=0, padx=5, pady=5)
+kode_kamar_combobox = ttk.Combobox(window, values=list(kamar_harga.keys()))
+kode_kamar_combobox.grid(row=4, column=1, padx=5, pady=5)
+
+# Label dan entry untuk lama sewa
+lama_sewa_label = tk.Label(window, text="Lama Sewa (hari):")
+lama_sewa_label.grid(row=5, column=0, padx=5, pady=5)
+lama_sewa_entry = tk.Entry(window)
+lama_sewa_entry.grid(row=5, column=1, padx=5, pady=5)
+
+# Label dan entry untuk uang bayar
+uang_bayar_label = tk.Label(window, text="Uang Bayar:")
+uang_bayar_label.grid(row=6, column=0, padx=5, pady=5)
+uang_bayar_entry = tk.Entry(window)
+uang_bayar_entry.grid(row=6, column=1, padx=5, pady=5)
+
+# Tombol untuk menghitung biaya
+hitung_button = tk.Button(window, text="Hitung Biaya", command=hitung_biaya)
+hitung_button.grid(row=7, column=0, columnspan=2, padx=5, pady=5)
+
+# Label untuk menampilkan hasil perhitungan
+result_label = tk.Label(window, text="", justify="left", font=("Arial", 12))
+result_label.grid(row=8, column=0, columnspan=2, padx=5, pady=5)
+
+# Menjalankan loop GUI
+window.mainloop()
